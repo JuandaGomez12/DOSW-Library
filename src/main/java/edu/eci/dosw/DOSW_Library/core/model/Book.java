@@ -1,10 +1,11 @@
-package edu.eci.dosw.DOSW_Library.model;
+package edu.eci.dosw.DOSW_Library.core.model;
 
 import lombok.Data;
 
 @Data
-public class Book { 
-    String Title;
-    String author;
-    String ID;
+public class Book {
+    private String title;
+    private String author;
+    private String id;
+    private boolean available = true;
 }

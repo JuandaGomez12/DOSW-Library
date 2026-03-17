@@ -1,9 +1,9 @@
-package edu.eci.dosw.DOSW_Library.model;
+package edu.eci.dosw.DOSW_Library.core.model;
 
 import lombok.Data;
 
 @Data
-public class User { 
-    String name;
-    String ID;
+public class User {
+    private String name;
+    private String id;
 }
