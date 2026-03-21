@@ -34,4 +34,9 @@ public class UserService {
                 .findFirst()
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
+
+    public void deleteUser(String id) {
+        User user = getUserById(id);
+        users.remove(user);
+    }
 }

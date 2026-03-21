@@ -46,7 +46,7 @@ class LoanServiceTest {
         Loan loan = new Loan();
         loan.setBook(bookId);
         loan.setUser(userId);
-        loan.setLoanDate("2026-03-16");
+        loan.setLoanDate("2026-03-21");
         return loan;
     }
 
@@ -84,7 +84,6 @@ class LoanServiceTest {
         bookService.addBook(book2, 1);
 
         loanService.createLoan(buildLoan("B001", "U001"));
-
         assertThrows(LoanLimitExceededException.class, () -> loanService.createLoan(buildLoan("B002", "U001")));
     }
 
@@ -98,5 +97,18 @@ class LoanServiceTest {
     void createLoan_missingUserId_throwsException() {
         Loan loan = buildLoan("B001", "");
         assertThrows(IllegalArgumentException.class, () -> loanService.createLoan(loan));
+    }
+
+    @Test
+    void returnBook_success() {
+        loanService.createLoan(buildLoan("B001", "U001"));
+        Loan returned = loanService.returnBook("B001");
+        assertEquals("RETURNED", returned.getStatus());
+        assertTrue(bookService.getBookById("B001").isAvailable());
+    }
+
+    @Test
+    void returnBook_noActiveLoan_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> loanService.returnBook("B001"));
     }
 }

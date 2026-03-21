@@ -29,8 +29,7 @@ class BookServiceTest {
 
     @Test
     void addBook_success() {
-        Book book = buildBook("B001");
-        Book result = bookService.addBook(book, 3);
+        Book result = bookService.addBook(buildBook("B001"), 3);
         assertEquals("B001", result.getId());
         assertEquals(3, bookService.getCopies("B001"));
     }
@@ -53,8 +52,7 @@ class BookServiceTest {
     @Test
     void getBookById_success() {
         bookService.addBook(buildBook("B001"), 1);
-        Book found = bookService.getBookById("B001");
-        assertEquals("B001", found.getId());
+        assertEquals("B001", bookService.getBookById("B001").getId());
     }
 
     @Test
@@ -63,10 +61,32 @@ class BookServiceTest {
     }
 
     @Test
+    void updateBook_success() {
+        bookService.addBook(buildBook("B001"), 1);
+        Book updated = new Book();
+        updated.setTitle("Nuevo Titulo");
+        updated.setAuthor("Nuevo Autor");
+        Book result = bookService.updateBook("B001", updated);
+        assertEquals("Nuevo Titulo", result.getTitle());
+        assertEquals("Nuevo Autor", result.getAuthor());
+    }
+
+    @Test
     void updateAvailability_success() {
         bookService.addBook(buildBook("B001"), 1);
-        Book updated = bookService.updateAvailability("B001", false);
-        assertFalse(updated.isAvailable());
+        assertFalse(bookService.updateAvailability("B001", false).isAvailable());
+    }
+
+    @Test
+    void deleteBook_success() {
+        bookService.addBook(buildBook("B001"), 1);
+        bookService.deleteBook("B001");
+        assertThrows(IllegalArgumentException.class, () -> bookService.getBookById("B001"));
+    }
+
+    @Test
+    void deleteBook_notFound_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> bookService.deleteBook("NOEXISTE"));
     }
 
     @Test

@@ -12,28 +12,40 @@ import java.util.Map;
 @Service
 public class BookService {
 
-    private final Map<Book, Integer> books = new HashMap<>();
+    private final Map<String, Book> books = new HashMap<>();
+    private final Map<String, Integer> copies = new HashMap<>();
     private final BookValidator bookValidator;
 
     public BookService(BookValidator bookValidator) {
         this.bookValidator = bookValidator;
     }
 
-    public Book addBook(Book book, int copies) {
+    public Book addBook(Book book, int numCopies) {
         bookValidator.validate(book);
-        books.put(book, copies);
+        books.put(book.getId(), book);
+        copies.put(book.getId(), numCopies);
         return book;
     }
 
     public List<Book> getAllBooks() {
-        return List.copyOf(books.keySet());
+        return List.copyOf(books.values());
     }
 
     public Book getBookById(String id) {
-        return books.keySet().stream()
-                .filter(b -> b.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Libro no encontrado con ID: " + id));
+        Book book = books.get(id);
+        if (book == null) {
+            throw new IllegalArgumentException("Libro no encontrado con ID: " + id);
+        }
+        return book;
+    }
+
+    public Book updateBook(String id, Book updated) {
+        Book book = getBookById(id);
+        if (updated.getTitle() != null && !updated.getTitle().isBlank())
+            book.setTitle(updated.getTitle());
+        if (updated.getAuthor() != null && !updated.getAuthor().isBlank())
+            book.setAuthor(updated.getAuthor());
+        return book;
     }
 
     public Book updateAvailability(String id, boolean available) {
@@ -42,9 +54,14 @@ public class BookService {
         return book;
     }
 
+    public void deleteBook(String id) {
+        getBookById(id);
+        books.remove(id);
+        copies.remove(id);
+    }
+
     public int getCopies(String id) {
-        Book book = getBookById(id);
-        return books.get(book);
+        return copies.getOrDefault(id, 0);
     }
 
     public void checkAvailability(String bookId) {

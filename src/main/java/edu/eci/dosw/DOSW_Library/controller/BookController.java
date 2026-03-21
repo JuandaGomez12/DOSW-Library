@@ -30,10 +30,9 @@ public class BookController {
 
     @GetMapping
     public ResponseEntity<List<BookDTO>> getAllBooks() {
-        List<BookDTO> result = bookService.getAllBooks().stream()
-              .map(b -> bookMapper.toDTO(b, bookService.getCopies(b.getId())))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(bookService.getAllBooks().stream()
+                .map(b -> bookMapper.toDTO(b, bookService.getCopies(b.getId())))
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
@@ -42,10 +41,22 @@ public class BookController {
         return ResponseEntity.ok(bookMapper.toDTO(book, bookService.getCopies(id)));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<BookDTO> updateBook(@PathVariable String id, @RequestBody BookDTO dto) {
+        Book updated = bookService.updateBook(id, bookMapper.toModel(dto));
+        return ResponseEntity.ok(bookMapper.toDTO(updated, bookService.getCopies(id)));
+    }
+
     @PatchMapping("/{id}/availability")
     public ResponseEntity<BookDTO> updateAvailability(@PathVariable String id,
                                                       @RequestParam boolean available) {
         Book book = bookService.updateAvailability(id, available);
         return ResponseEntity.ok(bookMapper.toDTO(book, bookService.getCopies(id)));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable String id) {
+        bookService.deleteBook(id);
+        return ResponseEntity.noContent().build();
     }
 }

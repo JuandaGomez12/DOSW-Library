@@ -27,9 +27,7 @@ class UserServiceTest {
 
     @Test
     void registerUser_success() {
-        User user = buildUser("U001");
-        User result = userService.registerUser(user);
-        assertEquals("U001", result.getId());
+        assertEquals("U001", userService.registerUser(buildUser("U001")).getId());
     }
 
     @Test
@@ -56,12 +54,23 @@ class UserServiceTest {
     @Test
     void getUserById_success() {
         userService.registerUser(buildUser("U001"));
-        User found = userService.getUserById("U001");
-        assertEquals("U001", found.getId());
+        assertEquals("U001", userService.getUserById("U001").getId());
     }
 
     @Test
     void getUserById_notFound_throwsException() {
         assertThrows(UserNotFoundException.class, () -> userService.getUserById("NOEXISTE"));
+    }
+
+    @Test
+    void deleteUser_success() {
+        userService.registerUser(buildUser("U001"));
+        userService.deleteUser("U001");
+        assertThrows(UserNotFoundException.class, () -> userService.getUserById("U001"));
+    }
+
+    @Test
+    void deleteUser_notFound_throwsException() {
+        assertThrows(UserNotFoundException.class, () -> userService.deleteUser("NOEXISTE"));
     }
 }

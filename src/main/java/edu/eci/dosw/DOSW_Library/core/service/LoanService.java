@@ -43,4 +43,19 @@ public class LoanService {
         loans.add(loan);
         return loan;
     }
+
+    public Loan returnBook(String bookId) {
+        Loan loan = loans.stream()
+                .filter(l -> l.getBook().equals(bookId) && "ACTIVE".equals(l.getStatus()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No hay préstamo activo para el libro: " + bookId));
+
+        loan.setStatus("RETURNED");
+        bookService.updateAvailability(bookId, true);
+        return loan;
+    }
+
+    public List<Loan> getAllLoans() {
+        return new ArrayList<>(loans);
+    }
 }
