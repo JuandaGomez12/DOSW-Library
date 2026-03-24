@@ -49,6 +49,10 @@ Aqui en general se coloco lo general del comportamiento de Dosw-Library, con el 
 
 ![GENERAL](docs/images/General.drawio.png)
 
+## Diagrama modelo de entidad relación
+
+![Relacional](docs/images/ModeloRelacional.png)
+
 ## Video de las pruebas API
 
 [Link del video de las pruebas API de la funcionalidades](https://youtu.be/EQ_w8G26Qlo)
