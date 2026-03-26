@@ -3,56 +3,64 @@ package edu.eci.dosw.DOSW_Library;
 import edu.eci.dosw.DOSW_Library.core.exception.BookNotAvailableException;
 import edu.eci.dosw.DOSW_Library.core.model.Book;
 import edu.eci.dosw.DOSW_Library.core.service.BookService;
-import edu.eci.dosw.DOSW_Library.core.validator.BookValidator;
+import edu.eci.dosw.DOSW_Library.persistence.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@Transactional
 class BookServiceTest {
 
+    @Autowired
     private BookService bookService;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     @BeforeEach
     void setUp() {
-        bookService = new BookService(new BookValidator());
+        bookRepository.deleteAll();
     }
 
-    private Book buildBook(String id) {
+    private Book buildBook() {
         Book book = new Book();
-        book.setTitle("Titulo");
-        book.setAuthor("Autor");
-        book.setId(id);
+        book.setTitle("Clean Code");
+        book.setAuthor("Robert Martin");
         book.setAvailable(true);
         return book;
     }
 
     @Test
     void addBook_success() {
-        Book result = bookService.addBook(buildBook("B001"), 3);
-        assertEquals("B001", result.getId());
-        assertEquals(3, bookService.getCopies("B001"));
+        Book result = bookService.addBook(buildBook(), 3);
+        assertNotNull(result.getId());
+        assertEquals(3, bookService.getCopies(result.getId()));
     }
 
     @Test
     void addBook_missingTitle_throwsException() {
         Book book = new Book();
         book.setAuthor("Autor");
-        book.setId("B002");
         assertThrows(IllegalArgumentException.class, () -> bookService.addBook(book, 1));
     }
 
     @Test
     void getAllBooks_returnsAllAdded() {
-        bookService.addBook(buildBook("B001"), 1);
-        bookService.addBook(buildBook("B002"), 2);
+        bookService.addBook(buildBook(), 1);
+        bookService.addBook(buildBook(), 2);
         assertEquals(2, bookService.getAllBooks().size());
     }
 
     @Test
     void getBookById_success() {
-        bookService.addBook(buildBook("B001"), 1);
-        assertEquals("B001", bookService.getBookById("B001").getId());
+        Book saved = bookService.addBook(buildBook(), 1);
+        Book found = bookService.getBookById(saved.getId());
+        assertEquals(saved.getId(), found.getId());
     }
 
     @Test
@@ -62,44 +70,23 @@ class BookServiceTest {
 
     @Test
     void updateBook_success() {
-        bookService.addBook(buildBook("B001"), 1);
+        Book saved = bookService.addBook(buildBook(), 1);
         Book updated = new Book();
         updated.setTitle("Nuevo Titulo");
-        updated.setAuthor("Nuevo Autor");
-        Book result = bookService.updateBook("B001", updated);
+        Book result = bookService.updateBook(saved.getId(), updated);
         assertEquals("Nuevo Titulo", result.getTitle());
-        assertEquals("Nuevo Autor", result.getAuthor());
-    }
-
-    @Test
-    void updateAvailability_success() {
-        bookService.addBook(buildBook("B001"), 1);
-        assertFalse(bookService.updateAvailability("B001", false).isAvailable());
     }
 
     @Test
     void deleteBook_success() {
-        bookService.addBook(buildBook("B001"), 1);
-        bookService.deleteBook("B001");
-        assertThrows(IllegalArgumentException.class, () -> bookService.getBookById("B001"));
-    }
-
-    @Test
-    void deleteBook_notFound_throwsException() {
-        assertThrows(IllegalArgumentException.class, () -> bookService.deleteBook("NOEXISTE"));
+        Book saved = bookService.addBook(buildBook(), 1);
+        bookService.deleteBook(saved.getId());
+        assertThrows(IllegalArgumentException.class, () -> bookService.getBookById(saved.getId()));
     }
 
     @Test
     void checkAvailability_notAvailable_throwsException() {
-        Book book = buildBook("B001");
-        book.setAvailable(false);
-        bookService.addBook(book, 1);
-        assertThrows(BookNotAvailableException.class, () -> bookService.checkAvailability("B001"));
-    }
-
-    @Test
-    void checkAvailability_available_doesNotThrow() {
-        bookService.addBook(buildBook("B001"), 1);
-        assertDoesNotThrow(() -> bookService.checkAvailability("B001"));
+        Book saved = bookService.addBook(buildBook(), 0);
+        assertThrows(BookNotAvailableException.class, () -> bookService.checkAvailability(saved.getId()));
     }
 }

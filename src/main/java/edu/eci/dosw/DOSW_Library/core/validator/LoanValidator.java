@@ -11,7 +11,7 @@ public class LoanValidator {
             throw new IllegalArgumentException("El ID del libro en el préstamo no puede estar vacío.");
         if (loan.getUser() == null || loan.getUser().isBlank())
             throw new IllegalArgumentException("El ID del usuario en el préstamo no puede estar vacío.");
-        if (loan.getLoanDate() == null || loan.getLoanDate().isBlank())
+        if (loan.getLoanDate() == null)
             throw new IllegalArgumentException("La fecha del préstamo no puede estar vacía.");
     }
 }

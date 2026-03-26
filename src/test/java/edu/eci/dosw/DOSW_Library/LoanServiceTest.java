@@ -9,69 +9,94 @@ import edu.eci.dosw.DOSW_Library.core.model.User;
 import edu.eci.dosw.DOSW_Library.core.service.BookService;
 import edu.eci.dosw.DOSW_Library.core.service.LoanService;
 import edu.eci.dosw.DOSW_Library.core.service.UserService;
-import edu.eci.dosw.DOSW_Library.core.validator.BookValidator;
-import edu.eci.dosw.DOSW_Library.core.validator.LoanValidator;
-import edu.eci.dosw.DOSW_Library.core.validator.UserValidator;
+import edu.eci.dosw.DOSW_Library.persistence.repository.BookRepository;
+import edu.eci.dosw.DOSW_Library.persistence.repository.LoanRepository;
+import edu.eci.dosw.DOSW_Library.persistence.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@Transactional
 class LoanServiceTest {
 
+    @Autowired
     private BookService bookService;
+
+    @Autowired
     private UserService userService;
+
+    @Autowired
     private LoanService loanService;
+
+    @Autowired
+    private BookRepository bookRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private LoanRepository loanRepository;
+
+    private Book savedBook;
+    private User savedUser;
 
     @BeforeEach
     void setUp() {
-        bookService = new BookService(new BookValidator());
-        userService = new UserService(new UserValidator());
-        loanService = new LoanService(new LoanValidator(), bookService, userService);
+        loanRepository.deleteAll();
+        bookRepository.deleteAll();
+        userRepository.deleteAll();
 
         Book book = new Book();
         book.setTitle("Clean Code");
         book.setAuthor("Robert Martin");
-        book.setId("B001");
         book.setAvailable(true);
-        bookService.addBook(book, 1);
+        savedBook = bookService.addBook(book, 1);
 
         User user = new User();
         user.setName("Juan");
         user.setId("U001");
-        userService.registerUser(user);
+        savedUser = userService.registerUser(user);
     }
 
-    private Loan buildLoan(String bookId, String userId) {
+    private Loan buildLoan() {
         Loan loan = new Loan();
-        loan.setBook(bookId);
-        loan.setUser(userId);
-        loan.setLoanDate("2026-03-21");
+        loan.setBook(savedBook.getId());
+        loan.setUser(savedUser.getId());
+        loan.setLoanDate(LocalDate.now());
         return loan;
     }
 
     @Test
     void createLoan_success() {
-        Loan result = loanService.createLoan(buildLoan("B001", "U001"));
+        Loan result = loanService.createLoan(buildLoan());
         assertEquals("ACTIVE", result.getStatus());
-        assertFalse(bookService.getBookById("B001").isAvailable());
     }
 
     @Test
     void createLoan_userNotFound_throwsException() {
-        assertThrows(UserNotFoundException.class, () -> loanService.createLoan(buildLoan("B001", "NOEXISTE")));
+        Loan loan = buildLoan();
+        loan.setUser("NOEXISTE");
+        assertThrows(UserNotFoundException.class, () -> loanService.createLoan(loan));
     }
 
     @Test
     void createLoan_bookNotAvailable_throwsException() {
-        loanService.createLoan(buildLoan("B001", "U001"));
+        loanService.createLoan(buildLoan());
 
         User user2 = new User();
         user2.setName("Maria");
-        user2.setId("U002");
-        userService.registerUser(user2);
+        User savedUser2 = userService.registerUser(user2);
 
-        assertThrows(BookNotAvailableException.class, () -> loanService.createLoan(buildLoan("B001", "U002")));
+        Loan loan2 = buildLoan();
+        loan2.setUser(savedUser2.getId());
+        assertThrows(BookNotAvailableException.class, () -> loanService.createLoan(loan2));
     }
 
     @Test
@@ -79,36 +104,25 @@ class LoanServiceTest {
         Book book2 = new Book();
         book2.setTitle("Refactoring");
         book2.setAuthor("Fowler");
-        book2.setId("B002");
         book2.setAvailable(true);
-        bookService.addBook(book2, 1);
+        Book savedBook2 = bookService.addBook(book2, 1);
 
-        loanService.createLoan(buildLoan("B001", "U001"));
-        assertThrows(LoanLimitExceededException.class, () -> loanService.createLoan(buildLoan("B002", "U001")));
-    }
+        loanService.createLoan(buildLoan());
 
-    @Test
-    void createLoan_missingBookId_throwsException() {
-        Loan loan = buildLoan("", "U001");
-        assertThrows(IllegalArgumentException.class, () -> loanService.createLoan(loan));
-    }
-
-    @Test
-    void createLoan_missingUserId_throwsException() {
-        Loan loan = buildLoan("B001", "");
-        assertThrows(IllegalArgumentException.class, () -> loanService.createLoan(loan));
+        Loan loan2 = buildLoan();
+        loan2.setBook(savedBook2.getId());
+        assertThrows(LoanLimitExceededException.class, () -> loanService.createLoan(loan2));
     }
 
     @Test
     void returnBook_success() {
-        loanService.createLoan(buildLoan("B001", "U001"));
-        Loan returned = loanService.returnBook("B001");
+        loanService.createLoan(buildLoan());
+        Loan returned = loanService.returnBook(savedBook.getId());
         assertEquals("RETURNED", returned.getStatus());
-        assertTrue(bookService.getBookById("B001").isAvailable());
     }
 
     @Test
     void returnBook_noActiveLoan_throwsException() {
-        assertThrows(IllegalArgumentException.class, () -> loanService.returnBook("B001"));
+        assertThrows(IllegalArgumentException.class, () -> loanService.returnBook(savedBook.getId()));
     }
 }

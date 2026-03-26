@@ -9,7 +9,5 @@ public class UserValidator {
     public void validate(User user) {
         if (user.getName() == null || user.getName().isBlank())
             throw new IllegalArgumentException("El nombre del usuario no puede estar vacío.");
-        if (user.getId() == null || user.getId().isBlank())
-            throw new IllegalArgumentException("El ID del usuario no puede estar vacío.");
     }
 }

@@ -12,18 +12,19 @@ public class LoanMapper {
         loan.setBook(dto.getBook());
         loan.setUser(dto.getUser());
         loan.setLoanDate(dto.getLoanDate());
-        loan.setStatus(dto.getStatus());
         loan.setReturnDate(dto.getReturnDate());
+        loan.setStatus(dto.getStatus());
         return loan;
     }
 
     public LoanDTO toDTO(Loan loan) {
         LoanDTO dto = new LoanDTO();
+        dto.setId(loan.getId());
         dto.setBook(loan.getBook());
         dto.setUser(loan.getUser());
         dto.setLoanDate(loan.getLoanDate());
-        dto.setStatus(loan.getStatus());
         dto.setReturnDate(loan.getReturnDate());
+        dto.setStatus(loan.getStatus());
         return dto;
     }
 }
