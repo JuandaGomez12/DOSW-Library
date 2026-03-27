@@ -51,6 +51,8 @@ Aqui en general se coloco lo general del comportamiento de Dosw-Library, con el 
 
 ## Diagrama modelo de entidad relación
 
+En el diagrama podemos visualizar las 3 tablas claves que seran las de libros, usuarios y prestamos con sus respectivos atributos para que en la API en formato JSON se guarde de manera adecuada
+
 ![Relacional](docs/images/ModeloRelacional.png)
 
 ## Video de las pruebas API
