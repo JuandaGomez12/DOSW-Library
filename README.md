@@ -13,7 +13,6 @@ Sistema de gestión de biblioteca desarrollado con Spring Boot. Permite administ
 - [Diagrama de específicos](#diagrama-de-específicos)
 - [Diagrama de componentes general](#diagrama-de-componentes-general)
 - [Diagrama modelo de entidad relación](#diagrama-modelo-de-entidad-relación)
-- [Diagrama modelo no relacional - MongoDB](#diagrama-modelo-no-relacional---mongodb)
 - [Video de las pruebas API](#video-de-las-pruebas-api)
 - [Pruebas de seguridad Swagger](#pruebas-de-seguridad-swagger)
 
