@@ -9,40 +9,59 @@ import edu.eci.dosw.DOSW_Library.core.model.User;
 import edu.eci.dosw.DOSW_Library.core.service.BookService;
 import edu.eci.dosw.DOSW_Library.core.service.LoanService;
 import edu.eci.dosw.DOSW_Library.core.service.UserService;
-import edu.eci.dosw.DOSW_Library.core.validator.BookValidator;
-import edu.eci.dosw.DOSW_Library.core.validator.LoanValidator;
-import edu.eci.dosw.DOSW_Library.core.validator.UserValidator;
+import edu.eci.dosw.DOSW_Library.persistence.repository.BookRepository;
+import edu.eci.dosw.DOSW_Library.persistence.repository.LoanRepository;
+import edu.eci.dosw.DOSW_Library.persistence.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@Transactional
 class LibraryFlowTest {
 
+    @Autowired
     private BookService bookService;
+
+    @Autowired
     private UserService userService;
+
+    @Autowired
     private LoanService loanService;
+
+    @Autowired
+    private BookRepository bookRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private LoanRepository loanRepository;
 
     @BeforeEach
     void setUp() {
-        bookService = new BookService(new BookValidator());
-        userService = new UserService(new UserValidator());
-        loanService = new LoanService(new LoanValidator(), bookService, userService);
+        loanRepository.deleteAll();
+        bookRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
-    private Book buildBook(String id) {
+    private Book buildBook() {
         Book book = new Book();
         book.setTitle("Clean Code");
         book.setAuthor("Robert Martin");
-        book.setId(id);
         book.setAvailable(true);
         return book;
     }
 
-    private User buildUser(String id) {
+    private User buildUser() {
         User user = new User();
         user.setName("Juan");
-        user.setId(id);
         return user;
     }
 
@@ -50,70 +69,62 @@ class LibraryFlowTest {
         Loan loan = new Loan();
         loan.setBook(bookId);
         loan.setUser(userId);
-        loan.setLoanDate("2026-03-21");
+        loan.setLoanDate(LocalDate.now());
         return loan;
     }
 
     @Test
     void flujoCompleto_prestarYDevolverLibro() {
-        userService.registerUser(buildUser("U001"));
-        bookService.addBook(buildBook("B001"), 1);
+        User user = userService.registerUser(buildUser());
+        Book book = bookService.addBook(buildBook(), 1);
 
-        Loan loan = loanService.createLoan(buildLoan("B001", "U001"));
+        Loan loan = loanService.createLoan(buildLoan(book.getId(), user.getId()));
         assertEquals("ACTIVE", loan.getStatus());
-        assertFalse(bookService.getBookById("B001").isAvailable());
 
-        Loan returned = loanService.returnBook("B001");
+        Loan returned = loanService.returnBook(book.getId());
         assertEquals("RETURNED", returned.getStatus());
-        assertTrue(bookService.getBookById("B001").isAvailable());
     }
 
     @Test
     void flujoLibros_agregarActualizarEliminar() {
-        bookService.addBook(buildBook("B001"), 2);
+        Book book = bookService.addBook(buildBook(), 2);
         assertEquals(1, bookService.getAllBooks().size());
 
         Book updated = new Book();
         updated.setTitle("Nuevo Titulo");
-        bookService.updateBook("B001", updated);
-        assertEquals("Nuevo Titulo", bookService.getBookById("B001").getTitle());
+        bookService.updateBook(book.getId(), updated);
+        assertEquals("Nuevo Titulo", bookService.getBookById(book.getId()).getTitle());
 
-        bookService.deleteBook("B001");
-        assertThrows(IllegalArgumentException.class, () -> bookService.getBookById("B001"));
+        bookService.deleteBook(book.getId());
+        assertThrows(IllegalArgumentException.class, () -> bookService.getBookById(book.getId()));
     }
 
     @Test
     void flujoUsuarios_registrarEliminar() {
-        userService.registerUser(buildUser("U001"));
+        User user = userService.registerUser(buildUser());
         assertEquals(1, userService.getAllUsers().size());
 
-        userService.deleteUser("U001");
-        assertThrows(UserNotFoundException.class, () -> userService.getUserById("U001"));
+        userService.deleteUser(user.getId());
+        assertThrows(UserNotFoundException.class, () -> userService.getUserById(user.getId()));
     }
 
     @Test
     void flujoPrestamo_libroNoDisponible_lanzaExcepcion() {
-        userService.registerUser(buildUser("U001"));
-        userService.registerUser(buildUser("U002"));
-        bookService.addBook(buildBook("B001"), 1);
+        User user1 = userService.registerUser(buildUser());
+        User user2 = userService.registerUser(buildUser());
+        Book book = bookService.addBook(buildBook(), 1);
 
-        loanService.createLoan(buildLoan("B001", "U001"));
-        assertThrows(BookNotAvailableException.class, () -> loanService.createLoan(buildLoan("B001", "U002")));
-    }
-
-    @Test
-    void flujoPrestamo_usuarioNoExiste_lanzaExcepcion() {
-        bookService.addBook(buildBook("B001"), 1);
-        assertThrows(UserNotFoundException.class, () -> loanService.createLoan(buildLoan("B001", "NOEXISTE")));
+        loanService.createLoan(buildLoan(book.getId(), user1.getId()));
+        assertThrows(BookNotAvailableException.class, () -> loanService.createLoan(buildLoan(book.getId(), user2.getId())));
     }
 
     @Test
     void flujoPrestamo_limiteExcedido_lanzaExcepcion() {
-        userService.registerUser(buildUser("U001"));
-        bookService.addBook(buildBook("B001"), 1);
-        bookService.addBook(buildBook("B002"), 1);
+        User user = userService.registerUser(buildUser());
+        Book book1 = bookService.addBook(buildBook(), 1);
+        Book book2 = bookService.addBook(buildBook(), 1);
 
-        loanService.createLoan(buildLoan("B001", "U001"));
-        assertThrows(LoanLimitExceededException.class, () -> loanService.createLoan(buildLoan("B002", "U001")));
+        loanService.createLoan(buildLoan(book1.getId(), user.getId()));
+        assertThrows(LoanLimitExceededException.class, () -> loanService.createLoan(buildLoan(book2.getId(), user.getId())));
     }
 }

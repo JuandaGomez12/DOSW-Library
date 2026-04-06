@@ -4,6 +4,20 @@ Sistema de gestión de biblioteca desarrollado con Spring Boot. Permite administ
 
 ---
 
+## Índice
+
+- [Pruebas de los servicios](#pruebas-de-los-servicios)
+- [Cobertura de código - JaCoCo](#cobertura-de-código---jacoco)
+- [Análisis estático - SonarQube](#análisis-estático---sonarqube)
+- [Diagrama de clases](#diagrama-de-clases)
+- [Diagrama de específicos](#diagrama-de-específicos)
+- [Diagrama de componentes general](#diagrama-de-componentes-general)
+- [Diagrama modelo de entidad relación](#diagrama-modelo-de-entidad-relación)
+- [Video de las pruebas API](#video-de-las-pruebas-api)
+- [Pruebas de seguridad Swagger](#pruebas-de-seguridad-swagger)
+
+---
+
 ## Pruebas de los servicios
 
 Se implementaron pruebas unitarias y funcionales sobre los tres servicios principales. Todas pasan sin errores las 31 pruebas hechas.
@@ -49,6 +63,18 @@ Aqui en general se coloco lo general del comportamiento de Dosw-Library, con el 
 
 ![GENERAL](docs/images/General.drawio.png)
 
+## Diagrama modelo de entidad relación
+
+En el diagrama podemos visualizar las 3 tablas claves que seran las de libros, usuarios y prestamos con sus respectivos atributos para que en la API en formato JSON se guarde de manera adecuada
+
+![Relacional](docs/images/ModeloRelacional.png)
+
 ## Video de las pruebas API
 
 [Link del video de las pruebas API de la funcionalidades](https://youtu.be/EQ_w8G26Qlo)
+
+---
+
+## Pruebas de seguridad Swagger
+
+[Video de las pruebas de seguridad con Swagger](https://youtu.be/P3C_w7uBhU4)
