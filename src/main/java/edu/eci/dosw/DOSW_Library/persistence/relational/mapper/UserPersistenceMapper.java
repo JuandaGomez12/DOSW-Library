@@ -1,7 +1,7 @@
-package edu.eci.dosw.DOSW_Library.persistence.mapper;
+package edu.eci.dosw.DOSW_Library.persistence.relational.mapper;
 
 import edu.eci.dosw.DOSW_Library.core.model.User;
-import edu.eci.dosw.DOSW_Library.persistence.entity.UserEntity;
+import edu.eci.dosw.DOSW_Library.persistence.relational.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,7 +14,7 @@ public class UserPersistenceMapper {
         return entity;
     }
 
-    public User toModel(UserEntity entity) {
+    public User toDomain(UserEntity entity) {
         User user = new User();
         user.setId(entity.getId());
         user.setName(entity.getName());

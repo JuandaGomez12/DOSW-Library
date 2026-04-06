@@ -1,6 +1,6 @@
 package edu.eci.dosw.DOSW_Library.security;
 
-import edu.eci.dosw.DOSW_Library.persistence.entity.UserEntity;
+import edu.eci.dosw.DOSW_Library.persistence.relational.entity.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

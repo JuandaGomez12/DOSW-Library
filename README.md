@@ -4,6 +4,21 @@ Sistema de gestión de biblioteca desarrollado con Spring Boot. Permite administ
 
 ---
 
+## Índice
+
+- [Pruebas de los servicios](#pruebas-de-los-servicios)
+- [Cobertura de código - JaCoCo](#cobertura-de-código---jacoco)
+- [Análisis estático - SonarQube](#análisis-estático---sonarqube)
+- [Diagrama de clases](#diagrama-de-clases)
+- [Diagrama de específicos](#diagrama-de-específicos)
+- [Diagrama de componentes general](#diagrama-de-componentes-general)
+- [Diagrama modelo de entidad relación](#diagrama-modelo-de-entidad-relación)
+- [Diagrama modelo no relacional - MongoDB](#diagrama-modelo-no-relacional---mongodb)
+- [Video de las pruebas API](#video-de-las-pruebas-api)
+- [Pruebas de seguridad Swagger](#pruebas-de-seguridad-swagger)
+
+---
+
 ## Pruebas de los servicios
 
 Se implementaron pruebas unitarias y funcionales sobre los tres servicios principales. Todas pasan sin errores las 31 pruebas hechas.
@@ -45,7 +60,7 @@ Aquí veremos a nivel interno el manejo de la estructura del código, con los co
 
 ## Diagrama de componentes general
 
-Aqui en general se coloco lo general del comportamiento de Dosw-Library, con el usuario que entra al front y como tal el back o el core de la api es la que guardara esa solicitudes o operaciones CRUD para que se guarde enn una base de datos.
+Aqui en general se coloco lo general del comportamiento de Dosw-Library, con el usuario que entra al front y como tal el back o el core de la api es la que guardara esas solicitudes o operaciones CRUD para que se guarde en una base de datos.
 
 ![GENERAL](docs/images/General.drawio.png)
 
@@ -55,6 +70,22 @@ En el diagrama podemos visualizar las 3 tablas claves que seran las de libros, u
 
 ![Relacional](docs/images/ModeloRelacional.png)
 
+---
+
+## Diagrama modelo no relacional - MongoDB
+
+El modelo no relacional representa la estructura de los documentos almacenados en MongoDB. A diferencia del modelo relacional, los datos se organizan en colecciones de documentos JSON, lo que permite mayor flexibilidad en la estructura de la información.
+
+![Mongo](docs/images/Mongo.drawio.png)
+
+---
+
 ## Video de las pruebas API
 
 [Link del video de las pruebas API de la funcionalidades](https://youtu.be/EQ_w8G26Qlo)
+
+---
+
+## Pruebas de seguridad Swagger
+
+[Video de las pruebas de seguridad con Swagger](https://youtu.be/P3C_w7uBhU4)

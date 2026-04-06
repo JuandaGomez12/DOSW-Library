@@ -1,8 +1,11 @@
 spring:
+  profiles:
+    active: mongo
+
   datasource:
     url: jdbc:postgresql://localhost:5432/dosw_library
     username: admin
-    password: admin
+    password: Cazafantasmas32
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -16,12 +19,8 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb+srv://JuanDa:TU_PASSWORD@cluster0.6hiv5lv.mongodb.net/dosw_library?retryWrites=true&w=majority&appName=Cluster0
-
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration
+      uri: mongodb+srv://JuanDa:Cazafantasmas32@cluster0.s579smk.mongodb.net/?appName=Cluster0
+      database: dosw_library
 
 server:
   port: 8443

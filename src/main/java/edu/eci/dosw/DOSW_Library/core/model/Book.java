@@ -4,8 +4,9 @@ import lombok.Data;
 
 @Data
 public class Book {
+    private String id;
     private String title;
     private String author;
-    private String id;
-    private boolean available = true;
+    private int totalCopies;
+    private int availableCopies;
 }

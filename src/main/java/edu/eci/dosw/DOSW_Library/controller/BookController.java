@@ -27,37 +27,27 @@ public class BookController {
     @PreAuthorize("hasRole('LIBRARIAN')")
     public ResponseEntity<BookDTO> addBook(@RequestBody BookDTO dto) {
         Book book = bookService.addBook(bookMapper.toModel(dto), dto.getCopies());
-        return ResponseEntity.ok(bookMapper.toDTO(book, dto.getCopies()));
+        return ResponseEntity.ok(bookMapper.toDTO(book));
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('LIBRARIAN', 'MEMBER')")
     public ResponseEntity<List<BookDTO>> getAllBooks() {
         return ResponseEntity.ok(bookService.getAllBooks().stream()
-                .map(b -> bookMapper.toDTO(b, bookService.getCopies(b.getId())))
+                .map(bookMapper::toDTO)
                 .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('LIBRARIAN', 'MEMBER')")
     public ResponseEntity<BookDTO> getBookById(@PathVariable String id) {
-        Book book = bookService.getBookById(id);
-        return ResponseEntity.ok(bookMapper.toDTO(book, bookService.getCopies(id)));
+        return ResponseEntity.ok(bookMapper.toDTO(bookService.getBookById(id)));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('LIBRARIAN')")
     public ResponseEntity<BookDTO> updateBook(@PathVariable String id, @RequestBody BookDTO dto) {
-        Book updated = bookService.updateBook(id, bookMapper.toModel(dto));
-        return ResponseEntity.ok(bookMapper.toDTO(updated, bookService.getCopies(id)));
-    }
-
-    @PatchMapping("/{id}/availability")
-    @PreAuthorize("hasRole('LIBRARIAN')")
-    public ResponseEntity<BookDTO> updateAvailability(@PathVariable String id,
-                                                      @RequestParam boolean available) {
-        Book book = bookService.updateAvailability(id, available);
-        return ResponseEntity.ok(bookMapper.toDTO(book, bookService.getCopies(id)));
+        return ResponseEntity.ok(bookMapper.toDTO(bookService.updateBook(id, bookMapper.toModel(dto))));
     }
 
     @DeleteMapping("/{id}")
