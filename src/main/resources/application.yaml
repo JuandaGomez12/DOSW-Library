@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/dosw_library
     username: admin
-    password: admin
+    password: Cazafantasmas32
     driver-class-name: org.postgresql.Driver
 
   jpa:
