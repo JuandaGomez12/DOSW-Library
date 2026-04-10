@@ -57,4 +57,15 @@ public class LoanService {
     public List<Loan> getLoansByUser(String userId) {
         return loanRepository.findByUserId(userId);
     }
+
+    public Loan getLoanById(String id) {
+        return loanRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Préstamo no encontrado con ID: " + id));
+    }
+
+    public void deleteLoan(String id) {
+        loanRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Préstamo no encontrado con ID: " + id));
+        loanRepository.delete(id);
+    }
 }

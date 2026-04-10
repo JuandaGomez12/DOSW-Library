@@ -50,4 +50,9 @@ public class BookRepositoryImpl implements BookRepository {
     public boolean existsById(String id) {
         return repository.existsById(id);
     }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }

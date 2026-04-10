@@ -51,6 +51,12 @@ public class BookService {
         bookRepository.delete(id);
     }
 
+    public int getCopies(String id) {
+        return bookRepository.findById(id)
+                .map(Book::getAvailableCopies)
+                .orElse(0);
+    }
+
     public void checkAvailability(String bookId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new IllegalArgumentException("Libro no encontrado con ID: " + bookId));

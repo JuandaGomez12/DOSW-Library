@@ -55,4 +55,9 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findByUsername(String username) {
         return repository.findByUsername(username).map(mapper::toDomain);
     }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }

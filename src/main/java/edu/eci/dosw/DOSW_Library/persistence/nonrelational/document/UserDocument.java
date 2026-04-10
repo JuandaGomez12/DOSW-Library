@@ -4,8 +4,6 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.index.Indexed;
-
 @Data
 @Document(collection = "users")
 public class UserDocument {
@@ -16,7 +14,6 @@ public class UserDocument {
     @Field("name")
     private String name;
 
-    @Indexed(unique = true)
     @Field("username")
     private String username;
 

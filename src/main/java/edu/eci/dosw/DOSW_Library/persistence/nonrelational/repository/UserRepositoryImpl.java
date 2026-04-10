@@ -2,6 +2,7 @@ package edu.eci.dosw.DOSW_Library.persistence.nonrelational.repository;
 
 import edu.eci.dosw.DOSW_Library.core.model.User;
 import edu.eci.dosw.DOSW_Library.core.repository.UserRepository;
+import edu.eci.dosw.DOSW_Library.persistence.nonrelational.mapper.UserDocumentMapper;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
@@ -12,33 +13,51 @@ import java.util.Optional;
 @Profile("mongo")
 public class UserRepositoryImpl implements UserRepository {
 
+    private final UserDocumentRepository repository;
+    private final UserDocumentMapper mapper;
+
+    public UserRepositoryImpl(UserDocumentRepository repository, UserDocumentMapper mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
+    }
+
     @Override
     public User save(User user) {
-        throw new UnsupportedOperationException("Users are managed via relational DB only.");
+        return mapper.toDomain(
+            repository.save(mapper.toDocument(user))
+        );
     }
 
     @Override
     public Optional<User> findById(String id) {
-        throw new UnsupportedOperationException("Users are managed via relational DB only.");
+        return repository.findById(id).map(mapper::toDomain);
     }
 
     @Override
     public List<User> findAll() {
-        throw new UnsupportedOperationException("Users are managed via relational DB only.");
+        return repository.findAll()
+            .stream()
+            .map(mapper::toDomain)
+            .toList();
     }
 
     @Override
     public void delete(String id) {
-        throw new UnsupportedOperationException("Users are managed via relational DB only.");
+        repository.deleteById(id);
     }
 
     @Override
     public boolean existsById(String id) {
-        throw new UnsupportedOperationException("Users are managed via relational DB only.");
+        return repository.existsById(id);
     }
 
     @Override
     public Optional<User> findByUsername(String username) {
-        throw new UnsupportedOperationException("Users are managed via relational DB only.");
+        return repository.findByUsername(username).map(mapper::toDomain);
+    }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
     }
 }

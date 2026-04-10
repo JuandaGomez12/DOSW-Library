@@ -11,4 +11,5 @@ public interface BookRepository {
     List<Book> findAll();
     void delete(String id);
     boolean existsById(String id);
+    void deleteAll();
 }

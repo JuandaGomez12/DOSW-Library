@@ -15,7 +15,7 @@ Sistema de gestión de biblioteca desarrollado con Spring Boot. Permite administ
 - [Diagrama modelo de entidad relación](#diagrama-modelo-de-entidad-relación)
 - [Video de las pruebas API](#video-de-las-pruebas-api)
 - [Pruebas de seguridad Swagger](#pruebas-de-seguridad-swagger)
-
+-[Pruebas con MongoDb](#pruebas-con-mongodb)
 ---
 
 ## Pruebas de los servicios
@@ -88,3 +88,7 @@ El modelo no relacional representa la estructura de los documentos almacenados e
 ## Pruebas de seguridad Swagger
 
 [Video de las pruebas de seguridad con Swagger](https://youtu.be/P3C_w7uBhU4)
+
+## Pruebas con MongoDb
+
+[Link de pruebas](https://youtu.be/kFAfO3rZ2X4)

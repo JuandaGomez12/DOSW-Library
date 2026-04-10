@@ -75,4 +75,9 @@ public class LoanRepositoryImpl implements LoanRepository {
                 && status.equals(doc.getStatusEvents().getLast().getStatus()))
             .count();
     }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }

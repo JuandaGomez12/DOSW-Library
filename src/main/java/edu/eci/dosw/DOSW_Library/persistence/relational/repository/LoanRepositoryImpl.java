@@ -71,4 +71,9 @@ public class LoanRepositoryImpl implements LoanRepository {
     public long countByUserIdAndStatus(String userId, String status) {
         return repository.countByUserIdAndStatus(userId, LoanStatusEnum.valueOf(status));
     }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }
