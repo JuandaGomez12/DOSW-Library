@@ -9,21 +9,24 @@ import edu.eci.dosw.DOSW_Library.core.model.User;
 import edu.eci.dosw.DOSW_Library.core.service.BookService;
 import edu.eci.dosw.DOSW_Library.core.service.LoanService;
 import edu.eci.dosw.DOSW_Library.core.service.UserService;
-import edu.eci.dosw.DOSW_Library.persistence.repository.BookRepository;
-import edu.eci.dosw.DOSW_Library.persistence.repository.LoanRepository;
-import edu.eci.dosw.DOSW_Library.persistence.repository.UserRepository;
+import edu.eci.dosw.DOSW_Library.core.repository.BookRepository;
+import edu.eci.dosw.DOSW_Library.core.repository.LoanRepository;
+import edu.eci.dosw.DOSW_Library.core.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@ActiveProfiles("relational")
 class LoanServiceTest {
 
     @Autowired
@@ -56,7 +59,7 @@ class LoanServiceTest {
         Book book = new Book();
         book.setTitle("Clean Code");
         book.setAuthor("Robert Martin");
-        book.setAvailable(true);
+        
         savedBook = bookService.addBook(book, 1);
 
         User user = new User();
@@ -104,7 +107,7 @@ class LoanServiceTest {
         Book book2 = new Book();
         book2.setTitle("Refactoring");
         book2.setAuthor("Fowler");
-        book2.setAvailable(true);
+        
         Book savedBook2 = bookService.addBook(book2, 1);
 
         loanService.createLoan(buildLoan());
@@ -124,5 +127,67 @@ class LoanServiceTest {
     @Test
     void returnBook_noActiveLoan_throwsException() {
         assertThrows(IllegalArgumentException.class, () -> loanService.returnBook(savedBook.getId()));
+    }
+
+    // ─── Tests BDD de Reserva ───────────────────────────────────────────────
+
+    @Test
+    void dadoUnaPrestamo_cuandoLoConsulto_entoncesLaConsultaEsExitosaValidandoId() {
+        // Given
+        Loan created = loanService.createLoan(buildLoan());
+
+        // When
+        Loan found = loanService.getLoanById(created.getId());
+
+        // Then
+        assertNotNull(found.getId());
+        assertEquals(created.getId(), found.getId());
+    }
+
+    @Test
+    void dadoQueNoHayPrestamos_cuandoLoConsulto_entoncesNoRetornaNingunResultado() {
+        // Given - repositorio vacío (por @Transactional y deleteAll en setUp)
+        loanRepository.deleteAll();
+
+        // When
+        List<Loan> result = loanService.getAllLoans();
+
+        // Then
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void dadoQueNoHayPrestamos_cuandoLoCreo_entoncesLaCreacionEsExitosa() {
+        // Given - no hay préstamos registrados (setUp limpia)
+        loanRepository.deleteAll();
+
+        // When
+        Loan created = loanService.createLoan(buildLoan());
+
+        // Then
+        assertNotNull(created.getId());
+        assertEquals("ACTIVE", created.getStatus());
+    }
+
+    @Test
+    void dadoUnPrestamo_cuandoLoElimino_entoncesLaEliminacionEsExitosa() {
+        // Given
+        Loan created = loanService.createLoan(buildLoan());
+
+        // When & Then - no lanza excepción
+        assertDoesNotThrow(() -> loanService.deleteLoan(created.getId()));
+    }
+
+    @Test
+    void dadoUnPrestamo_cuandoLoEliminoYConsulto_entoncesNoRetornaNingunResultado() {
+        // Given
+        Loan created = loanService.createLoan(buildLoan());
+
+        // When
+        loanService.deleteLoan(created.getId());
+        List<Loan> result = loanService.getAllLoans();
+
+        // Then
+        assertTrue(result.isEmpty());
     }
 }

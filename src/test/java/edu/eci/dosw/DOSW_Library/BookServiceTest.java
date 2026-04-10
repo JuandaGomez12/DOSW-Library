@@ -3,17 +3,19 @@ package edu.eci.dosw.DOSW_Library;
 import edu.eci.dosw.DOSW_Library.core.exception.BookNotAvailableException;
 import edu.eci.dosw.DOSW_Library.core.model.Book;
 import edu.eci.dosw.DOSW_Library.core.service.BookService;
-import edu.eci.dosw.DOSW_Library.persistence.repository.BookRepository;
+import edu.eci.dosw.DOSW_Library.core.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@ActiveProfiles("relational")
 class BookServiceTest {
 
     @Autowired
@@ -31,7 +33,7 @@ class BookServiceTest {
         Book book = new Book();
         book.setTitle("Clean Code");
         book.setAuthor("Robert Martin");
-        book.setAvailable(true);
+        
         return book;
     }
 

@@ -9,13 +9,14 @@ import edu.eci.dosw.DOSW_Library.core.model.User;
 import edu.eci.dosw.DOSW_Library.core.service.BookService;
 import edu.eci.dosw.DOSW_Library.core.service.LoanService;
 import edu.eci.dosw.DOSW_Library.core.service.UserService;
-import edu.eci.dosw.DOSW_Library.persistence.repository.BookRepository;
-import edu.eci.dosw.DOSW_Library.persistence.repository.LoanRepository;
-import edu.eci.dosw.DOSW_Library.persistence.repository.UserRepository;
+import edu.eci.dosw.DOSW_Library.core.repository.BookRepository;
+import edu.eci.dosw.DOSW_Library.core.repository.LoanRepository;
+import edu.eci.dosw.DOSW_Library.core.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@ActiveProfiles("relational")
 class LibraryFlowTest {
 
     @Autowired
@@ -55,7 +57,7 @@ class LibraryFlowTest {
         Book book = new Book();
         book.setTitle("Clean Code");
         book.setAuthor("Robert Martin");
-        book.setAvailable(true);
+        
         return book;
     }
 

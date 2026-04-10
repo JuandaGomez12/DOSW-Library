@@ -15,7 +15,7 @@ Sistema de gestión de biblioteca desarrollado con Spring Boot. Permite administ
 - [Diagrama modelo de entidad relación](#diagrama-modelo-de-entidad-relación)
 - [Video de las pruebas API](#video-de-las-pruebas-api)
 - [Pruebas de seguridad Swagger](#pruebas-de-seguridad-swagger)
-
+-[Pruebas con MongoDb](#pruebas-con-mongodb)
 ---
 
 ## Pruebas de los servicios
@@ -59,7 +59,7 @@ Aquí veremos a nivel interno el manejo de la estructura del código, con los co
 
 ## Diagrama de componentes general
 
-Aqui en general se coloco lo general del comportamiento de Dosw-Library, con el usuario que entra al front y como tal el back o el core de la api es la que guardara esa solicitudes o operaciones CRUD para que se guarde enn una base de datos.
+Aqui en general se coloco lo general del comportamiento de Dosw-Library, con el usuario que entra al front y como tal el back o el core de la api es la que guardara esas solicitudes o operaciones CRUD para que se guarde en una base de datos.
 
 ![GENERAL](docs/images/General.drawio.png)
 
@@ -68,6 +68,16 @@ Aqui en general se coloco lo general del comportamiento de Dosw-Library, con el 
 En el diagrama podemos visualizar las 3 tablas claves que seran las de libros, usuarios y prestamos con sus respectivos atributos para que en la API en formato JSON se guarde de manera adecuada
 
 ![Relacional](docs/images/ModeloRelacional.png)
+
+---
+
+## Diagrama modelo no relacional - MongoDB
+
+El modelo no relacional representa la estructura de los documentos almacenados en MongoDB. A diferencia del modelo relacional, los datos se organizan en colecciones de documentos JSON, lo que permite mayor flexibilidad en la estructura de la información.
+
+![Mongo](docs/images/Mongo.drawio.png)
+
+---
 
 ## Video de las pruebas API
 
@@ -78,3 +88,7 @@ En el diagrama podemos visualizar las 3 tablas claves que seran las de libros, u
 ## Pruebas de seguridad Swagger
 
 [Video de las pruebas de seguridad con Swagger](https://youtu.be/P3C_w7uBhU4)
+
+## Pruebas con MongoDb
+
+[Link de pruebas](https://youtu.be/kFAfO3rZ2X4)
